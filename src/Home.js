@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React from 'react';
 import PostsList from './components/PostsList';
 const Home = () => {
   return (
@@ -7,5 +7,4 @@ const Home = () => {
     </div>
   );
 };
-
 export default Home;
