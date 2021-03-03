@@ -1,4 +1,6 @@
 import React, { useReducer } from 'react';
+import { ADD_POST, DELETE_POST, EDIT_POST } from '../types';
+
 import postReducer from './postReducer';
 const PostsContext = React.createContext();
 
@@ -13,11 +15,14 @@ const PostsContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(postReducer, initState);
 
   const deletePost = (postId) => {
-    dispatch({ type: 'DELETE_POST', payload: postId });
+    dispatch({ type: DELETE_POST, payload: postId });
   };
 
   const addPost = (post) => {
-    dispatch({ type: 'ADD_POST', payload: post });
+    dispatch({ type: ADD_POST, payload: post });
+  };
+  const editPost = (EditedPost) => {
+    dispatch({ type: EDIT_POST, payload: EditedPost });
   };
 
   return (
@@ -26,6 +31,7 @@ const PostsContextProvider = ({ children }) => {
         posts: state.posts,
         deletePost,
         addPost,
+        editPost,
       }}
     >
       {children}
