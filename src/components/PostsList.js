@@ -8,7 +8,9 @@ const PostsList = () => {
   return (
     <div>
       {posts &&
-        posts.map((post) => <PostItem post={post} deletePost={deletePost} />)}
+        posts.map((post) => (
+          <PostItem post={post} deletePost={deletePost} key={post.id} />
+        ))}
     </div>
   );
 };
