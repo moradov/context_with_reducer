@@ -1,15 +1,25 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
+import { Card, Button, Container } from 'react-bootstrap';
 const PostItem = ({ post: { title, body, id }, deletePost, history }) => {
   return (
-    <div>
-      <h2> {title} </h2>
-      <p> {body} </p>
-      <div>
-        <button onClick={() => deletePost(id)}> delete </button>
-        <button onClick={() => history.push('edit/' + id)}>edit</button>
-      </div>
-    </div>
+    <Container>
+      <Card style={{ marginTop: '10px' }}>
+        <Card.Body>
+          <Card.Title>{title} </Card.Title>
+          <Card.Text>{body}</Card.Text>
+          <Button variant="outline-danger" onClick={() => deletePost(id)}>
+            Delete
+          </Button>
+          <Button
+            variant="outline-primary ml-2"
+            onClick={() => history.push('edit/' + id)}
+          >
+            Edit
+          </Button>
+        </Card.Body>
+      </Card>
+    </Container>
   );
 };
 

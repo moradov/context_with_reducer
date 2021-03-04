@@ -5,12 +5,14 @@ import { PostsContextProvider } from './context/PostsContext/postContext';
 import AddPost from './components/AddPost';
 import EditPost from './components/EditPost';
 import Navbar from './components/UI/Navbar';
+import Alert from './components/UI/Alert';
 
 export default function App() {
   return (
     <Router>
       <PostsContextProvider>
         <Navbar />
+        <Alert />
         <Switch>
           <Route path="/add">
             <AddPost />
