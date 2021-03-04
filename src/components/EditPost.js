@@ -1,19 +1,20 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
+import { Form, Button, Container } from 'react-bootstrap';
+
 import { PostsContext } from '../context/PostsContext/postContext';
-import useAlert from '../hooks/useAlert';
 const EditPost = ({ match, history }) => {
-  const { posts, editPost } = useContext(PostsContext);
+  const { posts, editPost, setAlert } = useContext(PostsContext);
 
   useEffect(() => {
     ///chek if postId is valid
     const postId = match.params.postId;
     const postFound = posts.filter((postItem) => postItem.id === postId)[0];
     if (postFound) {
-      setIdValidity(false);
+      setIdValidity(true);
       setPostContent({ title: postFound.title, body: postFound.body });
     } else {
-      setIdValidity(true);
+      setIdValidity(false);
     }
     // eslint-disable-next-line
   }, []);
@@ -21,21 +22,6 @@ const EditPost = ({ match, history }) => {
   //
   const [postContent, setPostContent] = useState({ title: '', body: '' });
   const [IdIsValid, setIdValidity] = useState(false);
-
-  ///useAlert hook for rendering an alert after submiting post
-  const [successAlertJSX, setSuccessAlert] = useAlert(
-    'post edited successfuly',
-    'green',
-    'bottom',
-    5000
-  );
-  ///useAlert hook for rendering an alert after submiting post
-  const [dangerAlertJSX, setDangerAlert] = useAlert(
-    'all inputs are required',
-    'red',
-    'bottom',
-    5000
-  );
 
   const saveEditPostClicked = () => {
     //chek if inputs are not empty
@@ -47,36 +33,66 @@ const EditPost = ({ match, history }) => {
         body: postContent.body,
       };
       editPost(EditedPost);
-      setSuccessAlert();
       //clear post state after submiting post
       setPostContent({ title: '', body: '' });
+      //show seccess alert
+      setAlert({
+        message: 'post added succefuly ',
+        position: 'bottom',
+        color: 'green',
+        delay: 3500,
+      });
       //redirect after submiting post
-      setInterval(() => history.push('/'), 5000);
+      history.push('/');
     } else {
       //show warning alert if inputs are not valid
-      setDangerAlert();
+      setAlert({
+        message: 'all inputs are required',
+        position: 'bottom',
+        color: 'red',
+        delay: 3500,
+      });
     }
   };
 
   return (
-    <div>
-      <input
-        value={postContent.title}
-        onChange={(e) =>
-          setPostContent({ ...postContent, title: e.target.value })
-        }
-      />
-      <textarea
-        value={postContent.body}
-        onChange={(e) =>
-          setPostContent({ ...postContent, body: e.target.value })
-        }
-      ></textarea>
-      <button onClick={saveEditPostClicked}>save</button>
-      {dangerAlertJSX}
-      {successAlertJSX}
-    </div>
+    <Container>
+      {IdIsValid ? (
+        <Form variant="mt-4">
+          <Form.Group controlId="formBasicEmail">
+            <Form.Label>Title</Form.Label>
+            <Form.Control
+              value={postContent.title}
+              onChange={(e) =>
+                setPostContent({ ...postContent, title: e.target.value })
+              }
+              type="text"
+              placeholder="Enter Title"
+            />
+            <Form.Text className="text-muted">
+              We'll never share your email with anyone else.
+            </Form.Text>
+          </Form.Group>
+          <Form.Group controlId="exampleForm.ControlTextarea1">
+            <Form.Label>Content</Form.Label>
+            <Form.Control
+              as="textarea"
+              rows={3}
+              placeholder="Enter Your Post Content"
+              value={postContent.body}
+              onChange={(e) =>
+                setPostContent({ ...postContent, body: e.target.value })
+              }
+            />
+          </Form.Group>
+          <Button onClick={() => saveEditPostClicked()} variant="primary">
+            Edit
+          </Button>
+        </Form>
+      ) : (
+        <h1>this id not exist </h1>
+      )}
+    </Container>
   );
 };
-
 export default withRouter(EditPost);

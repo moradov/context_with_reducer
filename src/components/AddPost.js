@@ -1,27 +1,14 @@
 import React, { useState, useContext } from 'react';
 import { PostsContext } from '../context/PostsContext/postContext';
 import { withRouter } from 'react-router-dom';
-import useAlert from '../hooks/useAlert';
+import { Form, Button } from 'react-bootstrap';
 
 import Container from './UI/Container';
 
 const AddPost = ({ history }) => {
-  const { addPost } = useContext(PostsContext);
+  const { addPost, setAlert } = useContext(PostsContext);
   const [postContent, setPostContent] = useState({ title: '', body: '' });
-  ///useAlert hook for rendering an alert after submiting post
-  const [successAlertJSX, setSuccessAlert] = useAlert(
-    'user added',
-    'green',
-    'bottom',
-    5000
-  );
-  ///useAlert hook for rendering an alert after submiting post
-  const [dangerAlertJSX, setDangerAlert] = useAlert(
-    'all inputs are required',
-    'red',
-    'bottom',
-    5000
-  );
+
   /// submit post
   const addPostClicked = () => {
     //chek if inputs are not empty
@@ -34,35 +21,61 @@ const AddPost = ({ history }) => {
         body: postContent.body,
       };
       addPost(post);
-      setSuccessAlert();
+      // setSuccessAlert();
       //clear post state after submiting post
       setPostContent({ title: '', body: '' });
+      setAlert({
+        message: 'post added success',
+        position: 'bottom',
+        color: 'green',
+        delay: 3500,
+      });
       //redirect after submiting post
-      setInterval(() => history.push('/'), 5000);
+      history.push('/');
     } else {
       //show warning alert if inputs are not valid
-      setDangerAlert();
+      setAlert({
+        message: 'all inputs are required',
+        position: 'bottom',
+        color: 'red',
+        delay: 3500,
+      });
     }
   };
 
   return (
     <Container>
-      <input
-        value={postContent.title}
-        onChange={(e) =>
-          setPostContent({ ...postContent, title: e.target.value })
-        }
-      />
-      <textarea
-        value={postContent.body}
-        onChange={(e) =>
-          setPostContent({ ...postContent, body: e.target.value })
-        }
-      ></textarea>
-
-      <button onClick={addPostClicked}>Add</button>
-      {dangerAlertJSX}
-      {successAlertJSX}
+      <Form variant="mt-4">
+        <Form.Group controlId="formBasicEmail">
+          <Form.Label>Title</Form.Label>
+          <Form.Control
+            value={postContent.title}
+            onChange={(e) =>
+              setPostContent({ ...postContent, title: e.target.value })
+            }
+            type="text"
+            placeholder="Enter Title"
+          />
+          <Form.Text className="text-muted">
+            We'll never share your email with anyone else.
+          </Form.Text>
+        </Form.Group>
+        <Form.Group controlId="exampleForm.ControlTextarea1">
+          <Form.Label>Content</Form.Label>
+          <Form.Control
+            as="textarea"
+            rows={3}
+            placeholder="Enter Your Post Content"
+            value={postContent.body}
+            onChange={(e) =>
+              setPostContent({ ...postContent, body: e.target.value })
+            }
+          />
+        </Form.Group>
+        <Button onClick={() => addPostClicked()} variant="primary">
+          Add
+        </Button>
+      </Form>
     </Container>
   );
 };
